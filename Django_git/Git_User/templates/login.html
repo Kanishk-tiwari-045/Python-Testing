@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+     <style>
+        .form-control:focus {
+            border-color: #80bdff;
+            outline: 0;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+        .form-control {
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .container-custom {
+            padding: 2rem;
+            margin-top: 3rem;
+            background-color: rgb(210, 210, 210);
+            border-radius: 20px;
+            height: max-content;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" style="font-weight: 600;" href="#">Website</a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'home' %}">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'about' %}">About</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'contact' %}">Contact Us</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'login' %}">Login</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    
+    <div class="container container-custom mt-5">
+        <h1 style="font-weight: 700">Login</h1>
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="username" class="form-label" style="margin-left: 10px;">Username</label>
+                <input type="text" class="form-control" id="username" name="username" placeholder="Enter username" style="border-radius: 20px;">
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label" style="margin-left: 10px;">Password</label>
+                <input type="password" class="form-control" id="password" name="password" placeholder="Password" style="border-radius: 20px;">
+            </div>
+            <button type="submit" class="btn btn-primary">Login</button>
+        </form>
+    </div>
+</body>
+</html>
