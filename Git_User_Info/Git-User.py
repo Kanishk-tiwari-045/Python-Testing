@@ -30,8 +30,8 @@ class GithubUser:
     def Database_updation(self):
         if not self.details:
             return None
-        conn = sqlite3.connect('Users_Info.db')
-        conn.execute('''CREATE TABLE IF NOT EXISTS users(
+        obj2 = sqlite3.connect('Users_Info.db')
+        obj2.execute('''CREATE TABLE IF NOT EXISTS users(
                     login TEXT PRIMARY KEY,
                     id INTEGER,
                     name TEXT,
@@ -44,11 +44,11 @@ class GithubUser:
                     followers INTEGER,
                     following INTEGER)''')
 
-        conn.execute('''INSERT OR REPLACE INTO users(
+        obj2.execute('''INSERT OR REPLACE INTO users(
                      login, id, name, company, blog, location, email, bio, public_repos, followers, following)
                      VALUES (:login, :id, :name, :company, :blog, :location, :email, :bio, :public_repos, :followers, :following)''', self.details)
 
-        conn.commit()
+        obj2.commit()
 
 #Printing data on the console
     def print_details(self):
@@ -59,12 +59,12 @@ class GithubUser:
 
 # Main Execution
 username = str(input("Enter the GitHub username: "))
-user_object = GithubUser(username)
-user_object.fetch_details()
-if(user_object.user_details):
-    user_object.extract_details()
-    user_object.print_details()
-    user_object.Database_updation()
+user_obj = GithubUser(username)
+user_obj.fetch_details()
+if(user_obj.user_details):
+    user_obj.extract_details()
+    user_obj.print_details()
+    user_obj.Database_updation()
     print("User data has been saved.")
 else:
     print("User not found.")
