@@ -141,7 +141,7 @@ class GithubUser:
             print(json.dumps(event_details, indent=2))
 
     # Program to fetch commit activity of a particular Repository
-    def fetch_repo_commit_activity(self, repo_name):
+    def fetch_commits(self, repo_name):
         url = f"https://api.github.com/repos/{self.username}/{repo_name}/commits"
         response = requests.get(url)
         if response.status_code == 200:
@@ -150,7 +150,7 @@ class GithubUser:
             self.commit_activity = None
 
     # Program to show commits of a particular Repository
-    def create_contribution_heatmap(self, commit_activity):
+    def heatmap(self, commit_activity):
         if not commit_activity:
             return
         # Convert commit activity to dates
@@ -159,9 +159,9 @@ class GithubUser:
             for commit in commit_activity
         ]
         # Count commits per day
-        commit_count = pd.Series(commit_dates).value_counts().sort_index()
+        counts = pd.Series(commit_dates).value_counts().sort_index()
         # Create a DataFrame to fit into a calendar heatmap format
-        commit_df = commit_count.reset_index()
+        commit_df = counts.reset_index()
         commit_df.columns = ['date', 'commits']
 
         # Complete with all dates of the past year
@@ -175,7 +175,7 @@ class GithubUser:
         heatmap_data = commit_df.pivot(index='day', columns='month', values='commits').fillna(0)
         plt.figure(figsize=(6, 5))
         sns.heatmap(heatmap_data, cmap='YlGnBu', annot=True, fmt="d", cbar_kws={'label': 'Commits'})
-        plt.title(f'GitHub Contributions Heatmap for {self.username}/{repo_name}')
+        plt.title(f'Heatmap for {self.username}/{repo_name}')
         plt.xlabel('Month')
         plt.ylabel('Day of Month')
         plt.xticks(rotation=0)
@@ -198,8 +198,8 @@ if user_obj.user_details:
     if show_repo == 'y':
         user_obj.print_repo()
         repo_name = input("Enter the repository name: ").strip()
-        user_obj.fetch_repo_commit_activity(repo_name)
-        user_obj.create_contribution_heatmap(user_obj.commit_activity)
+        user_obj.fetch_commits(repo_name)
+        user_obj.heatmap(user_obj.commit_activity)
 
         repo_events = input("Do you want to see repo events? (y/n): ").strip().lower()
         if repo_events == 'y':
