@@ -1,8 +1,10 @@
 from django.core.management.base import BaseCommand
 from faker import Faker
-from django.contrib.auth.models import User
-from generation.models import Details, Working, Studies
+from django.contrib.auth import get_user_model
+from generation.models import Details
 import random
+
+User = get_user_model()
 
 class Command(BaseCommand):
     help = 'Generate fake data for testing'
@@ -83,24 +85,12 @@ class Command(BaseCommand):
                                              picture=fake.image_url(),
                                              bio=fake.sentence(nb_words=10),
                                              phone_number=self.generate_phone_number(fake),
-                                             address=fake.address())
-
-            start_date = fake.date_time_between(start_date='-10y', end_date='-1y')
-            end_date = fake.date_time_between(start_date=start_date, end_date='-1y')
-            Working.objects.create(user_profile=profile,
-                                       title=fake.job(),
-                                       techstack=fake.random_element(elements=tech_stacks),
-                                       company=fake.random_element(elements=company_names),
-                                       start_date=start_date,
-                                       end_date=end_date)
+                                             address=fake.address(),
+                                             title=fake.job(),
+                                             techstack=fake.random_element(elements=tech_stacks),
+                                             company=fake.random_element(elements=company_names),
+                                             degree=fake.random_element(elements=degree_types),
+                                             field_of_study=fake.random_element(elements=fields_of_study),
+                                             school=fake.random_element(elements=school_names))
             
-            start_date = fake.date_time_between(start_date='-10y', end_date='-1y')
-            end_date = fake.date_time_between(start_date=start_date, end_date='-1y')
-            Studies.objects.create(user_profile=profile,
-                                     degree=fake.random_element(elements=degree_types),
-                                     field_of_study=fake.random_element(elements=fields_of_study),
-                                     school=fake.random_element(elements=school_names),
-                                     start_date=start_date,
-                                     end_date=end_date)
-            
-        return ('successfully generated')
+        return 'successfully generated'

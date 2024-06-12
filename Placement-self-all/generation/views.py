@@ -5,7 +5,7 @@ from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib import colors
-from .models import Details, Working, Studies
+from .models import Details
 
 def generate_pdf(request):
     email = input("Enter the email address of the user: ")
@@ -17,6 +17,7 @@ def generate_pdf(request):
             doc = SimpleDocTemplate(response, pagesize=letter, rightMargin=40, leftMargin=40, topMargin=40, bottomMargin=40)
             elements = []
             styles = getSampleStyleSheet()
+            
             title_style = ParagraphStyle(
                 'TitleStyle',
                 parent=styles['Heading1'],
@@ -57,22 +58,16 @@ def generate_pdf(request):
             elements.append(Spacer(1, 20))
 
             elements.append(Paragraph("Work Experience", header_style))
-            user_work_experience = Working.objects.filter(user_profile=user_detail)
-            for work_exp in user_work_experience:
-                elements.append(Paragraph(f"{work_exp.title} at {work_exp.company}", bold_style))
-                elements.append(Paragraph(f"Tech Stack: {work_exp.techstack}", normal_style))
-                elements.append(Paragraph(f"Start Date: {work_exp.start_date}", normal_style))
-                elements.append(Paragraph(f"End Date: {work_exp.end_date}", normal_style))
-                elements.append(Spacer(1, 12))
+            elements.append(Paragraph(f"Title: {user_detail.title}", bold_style))
+            elements.append(Paragraph(f"Tech Stack: {user_detail.techstack}", normal_style))
+            elements.append(Paragraph(f"Company: {user_detail.company}", normal_style))
+            elements.append(Spacer(1, 20))
 
             elements.append(Paragraph("Education", header_style))
-            user_studies = Studies.objects.filter(user_profile=user_detail)
-            for study in user_studies:
-                elements.append(Paragraph(f"{study.degree} in {study.field_of_study}", bold_style))
-                elements.append(Paragraph(f"School: {study.school}", normal_style))
-                elements.append(Paragraph(f"Start Date: {study.start_date}", normal_style))
-                elements.append(Paragraph(f"End Date: {study.end_date}", normal_style))
-                elements.append(Spacer(1, 12))
+            elements.append(Paragraph(f"Degree: {user_detail.degree}", bold_style))
+            elements.append(Paragraph(f"Field of Study: {user_detail.field_of_study}", normal_style))
+            elements.append(Paragraph(f"School: {user_detail.school}", normal_style))
+            elements.append(Spacer(1, 20))
 
             doc.build(elements)
             return response
